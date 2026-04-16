@@ -543,20 +543,20 @@ class Spider
     {
         $base_url_parts = parse_url($uri);
 
-        $trimLength = 0;
+        $query_string_trim_length = 0;
 
         if (isset($base_url_parts['query'])) {
-            $trimLength = strlen($base_url_parts['query']) + 1;  //+1 for the ? chacter
+            $query_string_trim_length = strlen($base_url_parts['query']) + 1;  //+1 for the ? character
         }
 
-        $new_base_url = $uri;
+        $new_base_url = substr($uri, 0, strlen($uri)-$query_string_trim_length);
 
-        if (substr($uri, -1) != '/') {
+        if (substr($new_base_url, -1) != '/') {
             $path = pathinfo($base_url_parts['path']);
 
-            $trimLength += strlen($path['basename']);
+            $basename_trim_length = strlen($path['basename']);
 
-            $new_base_url = substr($uri, 0, strlen($uri)-$trimLength);
+            $new_base_url = substr($uri, 0, strlen($uri)-$basename_trim_length);
         }
 
         return $new_base_url;
