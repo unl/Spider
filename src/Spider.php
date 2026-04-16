@@ -543,20 +543,13 @@ class Spider
     {
         $base_url_parts = parse_url($uri);
 
-        $query_string_trim_length = 0;
+        // Strip query string
+        $new_base_url = $base_url_parts['scheme'] . '://' . $base_url_parts['host'] . $base_url_parts['path'];
 
-        if (isset($base_url_parts['query'])) {
-            $query_string_trim_length = strlen($base_url_parts['query']) + 1;  //+1 for the ? character
-        }
-
-        $new_base_url = substr($uri, 0, strlen($uri)-$query_string_trim_length);
-
+        // If the url doesn't end with a slash then remove the basename
         if (substr($new_base_url, -1) != '/') {
             $path = pathinfo($base_url_parts['path']);
-
-            $basename_trim_length = strlen($path['basename']);
-
-            $new_base_url = substr($uri, 0, strlen($uri)-$basename_trim_length);
+            $new_base_url = substr($new_base_url, 0, strlen($new_base_url) - strlen($path['basename']));
         }
 
         return $new_base_url;
